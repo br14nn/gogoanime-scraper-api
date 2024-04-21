@@ -19,6 +19,19 @@ export class AnimeService {
       const page = await browser.newPage();
       await page.goto(donwloadLink, { waitUntil: 'domcontentloaded' });
 
+      page.setRequestInterception(true);
+      page.on('request', (request) => {
+        if (
+          request.resourceType() === 'stylesheet' ||
+          request.resourceType() === 'font' ||
+          request.resourceType() === 'image'
+        ) {
+          request.abort();
+        } else {
+          request.continue();
+        }
+      });
+
       const streamLinkItems = await page.waitForSelector(
         `xpath/html/body/section/div/div[2]/div/div[4]/div[1]`,
       );
