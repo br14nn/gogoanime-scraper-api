@@ -5,6 +5,16 @@ import { gogoanimeUrl } from 'src/globals/urls';
 
 @Injectable()
 export class AnimeService {
+  async watchAnime(episodeId: string): Promise<IResults> {
+    try {
+      return { results: [] };
+    } catch (error) {
+      throw new ForbiddenException(
+        `Failed to get streaming links of this episode: ${episodeId}`,
+      );
+    }
+  }
+
   async searchAnime(keyword: string, page: string): Promise<IResults> {
     try {
       const res = await axios.get(
@@ -94,6 +104,9 @@ export class AnimeService {
       const animeStatus = $(
         `#wrapper_bg > section > section.content_left > div.main_body > div:nth-child(2) > div.anime_info_body_bg > p:nth-child(9) > a`,
       ).attr(`title`);
+      const animeTotalEpisodes = $(`#episode_page > li:last-child`)
+        .find(`a`)
+        .attr('ep_end');
 
       return {
         results: {
@@ -104,6 +117,7 @@ export class AnimeService {
           genres: animeGenres,
           releasedYear: animeReleasedYear,
           status: animeStatus,
+          totalEpisodes: animeTotalEpisodes,
         },
       };
     } catch (error) {

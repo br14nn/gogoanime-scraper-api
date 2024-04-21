@@ -1,3 +1,7 @@
+export class WatchAnimeDto {
+  episodeId: string;
+}
+
 export class AnimeInfoDto {
   id: string;
 }
