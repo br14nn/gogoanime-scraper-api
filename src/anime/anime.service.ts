@@ -15,7 +15,7 @@ export class AnimeService {
         `#wrapper_bg > section > section.content_left > div:nth-child(1) > div.anime_video_body > div.download-anime > div > ul > li.dowloads > a`,
       ).attr(`href`);
 
-      const browser = await puppeteer.launch({ headless: 'shell' });
+      const browser = await puppeteer.launch({ headless: true });
       const page = await browser.newPage();
       await page.goto(donwloadLink, { waitUntil: 'domcontentloaded' });
 
