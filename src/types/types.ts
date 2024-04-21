@@ -7,5 +7,4 @@ interface ITrendingAnimeInfo {
   title: string;
   coverImg: string;
   releasedYear: string;
-  genres: any[];
 }
