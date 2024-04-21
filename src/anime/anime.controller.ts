@@ -1,10 +1,17 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { AnimeService } from './anime.service';
-import { AnimeInfoDto } from './dto/anime.dto';
+import { AnimeInfoDto, SearchAnimeDto } from './dto/anime.dto';
 
 @Controller('anime')
 export class AnimeController {
   constructor(private anime: AnimeService) {}
+
+  @Get('search')
+  async search(@Query() query: SearchAnimeDto) {
+    query.page = !query.page ? '1' : query.page;
+    const res = await this.anime.searchAnime(query.keyword, query.page);
+    return res;
+  }
 
   @Get('info')
   async info(@Query() query: AnimeInfoDto) {

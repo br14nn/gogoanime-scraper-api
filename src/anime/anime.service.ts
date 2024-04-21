@@ -5,6 +5,59 @@ import { gogoanimeUrl } from 'src/globals/urls';
 
 @Injectable()
 export class AnimeService {
+  async searchAnime(keyword: string, page: string): Promise<IResults> {
+    try {
+      const res = await axios.get(
+        `${gogoanimeUrl}/search.html?keyword=${keyword}&page=${page}`,
+      );
+      const $ = cheerio.load(res.data);
+
+      const hasNextPage = $(
+        `#wrapper_bg > section > section.content_left > div > div.anime_name.new_series > div > div > ul`,
+      )
+        .find(`li.selected`)
+        .next()
+        .text();
+      const animeSearchResults: any[] = [];
+      $(
+        `#wrapper_bg > section > section.content_left > div > div.last_episodes > ul`,
+      )
+        .find(`li`)
+        .map((i, elem) => {
+          const animeId = $(elem)
+            .find(`p.name > a`)
+            .attr('href')
+            .replace('/category/', '');
+          const animeTitle = $(elem).find(`p.name > a`).attr('title');
+          const animeReleasedYear = $(elem)
+            .find(`p.released`)
+            .text()
+            .replace(/\n|\t|Released:|\s+/g, '');
+          const animeCoverImg = $(elem).find(`div.img > a > img`).attr(`src`);
+
+          animeSearchResults.push({
+            id: animeId,
+            title: animeTitle,
+            releasedYear: animeReleasedYear,
+            coverImg: animeCoverImg,
+          });
+        });
+
+      if (animeSearchResults.length == 0) throw Error();
+
+      return {
+        results: {
+          hasNextPage: hasNextPage == '' ? false : true,
+          data: animeSearchResults,
+        },
+      };
+    } catch (error) {
+      throw new ForbiddenException(
+        `No results found with your search: ${keyword}`,
+      );
+    }
+  }
+
   async getAnimeInfo(id: string): Promise<IResults> {
     try {
       const res = await axios.get(`${gogoanimeUrl}/category/${id}`);
