@@ -2,24 +2,53 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import * as cheerio from 'cheerio';
 import axios from 'axios';
 import { gogoanimeUrl } from 'src/globals/urls';
+import puppeteer from 'puppeteer';
 
 @Injectable()
 export class AnimeService {
   async watchAnime(episodeId: string): Promise<any> {
     try {
-      // const res = await axios.get(`${gogoanimeUrl}/${episodeId}`);
-      // const $ = cheerio.load(res.data);
+      const res = await axios.get(`${gogoanimeUrl}/${episodeId}`);
+      const $ = cheerio.load(res.data);
 
-      // const donwloadLink = $(
-      //   `#wrapper_bg > section > section.content_left > div:nth-child(1) > div.anime_video_body > div.download-anime > div > ul > li.dowloads > a`,
-      // ).attr(`href`);
+      const donwloadLink = $(
+        `#wrapper_bg > section > section.content_left > div:nth-child(1) > div.anime_video_body > div.download-anime > div > ul > li.dowloads > a`,
+      ).attr(`href`);
 
-      // const res2 = await axios.get(donwloadLink);
-      // const $2 = cheerio.load(res2.data);
-      // console.log($);
+      const browser = await puppeteer.launch({ headless: 'shell' });
+      const page = await browser.newPage();
+      await page.goto(donwloadLink, { waitUntil: 'domcontentloaded' });
 
-      return [];
+      const streamLinkItems = await page.waitForSelector(
+        `xpath/html/body/section/div/div[2]/div/div[4]/div[1]`,
+      );
+      const streamLinkItemsLength = await streamLinkItems.evaluate(
+        (el) => el.children.length - 2,
+      );
+
+      let streamUrls: any[] = [];
+      for (let i = 1; i <= streamLinkItemsLength; i++) {
+        const streamUrlElement = await page.waitForSelector(
+          `xpath/html/body/section/div/div[2]/div/div[4]/div[1]/div[${i}]/a`,
+        );
+        const streamUrl = await streamUrlElement.evaluate(
+          (el: HTMLAnchorElement) => el.href,
+        );
+        const streamQuality = await streamUrlElement.evaluate((el) =>
+          el.textContent.match(/\b(?:360|480|720|1080)P\b/),
+        );
+
+        streamUrls.push({
+          streamUrl: streamUrl,
+          quality: streamQuality[0],
+        });
+      }
+
+      await browser.close();
+
+      return { results: streamUrls };
     } catch (error) {
+      console.log(error);
       throw new ForbiddenException(
         `Failed to get streaming links of this episode: ${episodeId}`,
       );
