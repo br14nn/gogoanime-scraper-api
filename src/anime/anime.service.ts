@@ -5,9 +5,20 @@ import { gogoanimeUrl } from 'src/globals/urls';
 
 @Injectable()
 export class AnimeService {
-  async watchAnime(episodeId: string): Promise<IResults> {
+  async watchAnime(episodeId: string): Promise<any> {
     try {
-      return { results: [] };
+      // const res = await axios.get(`${gogoanimeUrl}/${episodeId}`);
+      // const $ = cheerio.load(res.data);
+
+      // const donwloadLink = $(
+      //   `#wrapper_bg > section > section.content_left > div:nth-child(1) > div.anime_video_body > div.download-anime > div > ul > li.dowloads > a`,
+      // ).attr(`href`);
+
+      // const res2 = await axios.get(donwloadLink);
+      // const $2 = cheerio.load(res2.data);
+      // console.log($);
+
+      return [];
     } catch (error) {
       throw new ForbiddenException(
         `Failed to get streaming links of this episode: ${episodeId}`,
