@@ -15,7 +15,7 @@ export class AnimeService {
         `#wrapper_bg > section > section.content_left > div:nth-child(1) > div.anime_video_body > div.download-anime > div > ul > li.dowloads > a`,
       ).attr(`href`);
 
-      const browser = await puppeteer.launch({ headless: true });
+      const browser = await puppeteer.launch({ headless: 'shell' });
       const page = await browser.newPage();
       await page.goto(donwloadLink, { waitUntil: 'domcontentloaded' });
 
@@ -48,7 +48,8 @@ export class AnimeService {
 
       return { results: streamUrls };
     } catch (error) {
-      console.log(error);
+      console.error(error);
+
       throw new ForbiddenException(
         `Failed to get streaming links of this episode: ${episodeId}`,
       );
