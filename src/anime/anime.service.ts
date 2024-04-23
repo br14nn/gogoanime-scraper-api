@@ -12,6 +12,7 @@ export class AnimeService {
       const episodes = await gogoanime.fetchEpisodeSources(episodeId);
       return { results: episodes };
     } catch (error) {
+      console.error(error);
       throw new ForbiddenException(
         `Failed to get streaming links of this episode: ${episodeId}`,
       );
@@ -65,6 +66,7 @@ export class AnimeService {
         },
       };
     } catch (error) {
+      console.error(error);
       throw new ForbiddenException(
         `No results found with your search: ${keyword}`,
       );
@@ -124,6 +126,7 @@ export class AnimeService {
         },
       };
     } catch (error) {
+      console.error(error);
       throw new ForbiddenException(`Failed to get anime info of: ${id}`);
     }
   }
@@ -162,6 +165,7 @@ export class AnimeService {
 
       return { results: trendingAnimesData };
     } catch (error) {
+      console.error(error);
       throw new ForbiddenException('Failed to get trending anime');
     }
   }
