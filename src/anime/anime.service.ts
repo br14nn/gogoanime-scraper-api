@@ -83,6 +83,9 @@ export class AnimeService {
       )
         .find('h1')
         .text();
+      const animeCoverImg = $(
+        `#wrapper_bg > section > section.content_left > div.main_body > div:nth-child(2) > div.anime_info_body_bg > img`,
+      ).attr('src');
       const animeType = $(
         `#wrapper_bg > section > section.content_left > div.main_body > div:nth-child(2) > div.anime_info_body_bg > p:nth-child(4)`,
       )
@@ -117,6 +120,7 @@ export class AnimeService {
         results: {
           id: id,
           title: animeTitle,
+          coverImg: animeCoverImg,
           type: animeType,
           plotSummary: animePlotSummary,
           genres: animeGenres,
