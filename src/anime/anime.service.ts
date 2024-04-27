@@ -52,7 +52,7 @@ export class AnimeService {
           animeSearchResults.push({
             id: animeId,
             title: animeTitle,
-            releasedYear: animeReleasedYear,
+            releasedYear: parseInt(animeReleasedYear),
             coverImg: animeCoverImg,
           });
         });
@@ -124,9 +124,9 @@ export class AnimeService {
           type: animeType,
           plotSummary: animePlotSummary,
           genres: animeGenres,
-          releasedYear: animeReleasedYear,
+          releasedYear: parseInt(animeReleasedYear),
           status: animeStatus,
-          totalEpisodes: animeTotalEpisodes,
+          totalEpisodes: parseInt(animeTotalEpisodes),
         },
       };
     } catch (error) {
@@ -163,7 +163,7 @@ export class AnimeService {
           id: animeId,
           title: animeTitle,
           coverImg: animeCoverImg,
-          releasedYear: animeReleasedYear,
+          releasedYear: parseInt(animeReleasedYear),
         });
       }
 

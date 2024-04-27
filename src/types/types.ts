@@ -2,7 +2,7 @@ interface ITrendingAnimeInfo {
   id: string;
   title: string;
   coverImg: string;
-  releasedYear: string;
+  releasedYear: number;
 }
 
 interface IResults {
